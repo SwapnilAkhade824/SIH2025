@@ -82,7 +82,7 @@ interface GenerationParams {
 export default function Create() {
   const [params, setParams] = useState<GenerationParams>({
     gridSize: [7],
-    patternType: "",
+    patternType: "mandala",
     selectedShapes: [],
     complexity: [5],
     symmetry: "radial",
