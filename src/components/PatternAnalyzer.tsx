@@ -117,7 +117,7 @@ export function PatternAnalyzer() {
 
       toast({
         title: "Analysis Complete!",
-        description: `Analyzed ${res.filename} successfully using ${res.modelUsed}`,
+        description: `Analyzed ${res.filename} successfully`,
       });
     } catch (error: unknown) {
       console.error('Analysis error:', error);
