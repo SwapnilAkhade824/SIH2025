@@ -1,3 +1,111 @@
+import { GoogleGenerativeAI } from "@google/generative-ai";
+import formidable from "formidable";
+import fs from "fs";
+
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
+
+// Disable body parsing for file uploads
+export const config = {
+  api: {
+    bodyParser: false,
+  },
+};
+
+// Helper function to try model with fallback
+async function tryModelWithFallback(prompt, imageData) {
+  let model = genAI.getGenerativeModel({ model: "gemini-2.5-pro" });
+  let modelUsed = "gemini-2.5-pro";
+  
+  try {
+    const content = imageData ? [prompt, imageData] : prompt;
+    const result = await model.generateContent(content);
+    const response = await result.response;
+    return { text: response.text(), modelUsed };
+  } catch (error) {
+    // Check if error is due to model overload or capacity issues
+    if (error?.message?.includes('overload') || 
+        error?.message?.includes('capacity') || 
+        error?.message?.includes('quota') ||
+        error?.status === 429 ||
+        error?.status === 503) {
+      
+      console.log('Pro model overloaded, falling back to Flash model');
+      model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+      modelUsed = "gemini-2.5-flash";
+      
+      const content = imageData ? [prompt, imageData] : prompt;
+      const result = await model.generateContent(content);
+      const response = await result.response;
+      return { text: response.text(), modelUsed };
+    }
+    
+    // Re-throw if it's not a capacity issue
+    throw error;
+  }
+}
+
+// Parse form data
+function parseForm(req) {
+  return new Promise((resolve, reject) => {
+    const form = formidable({
+      maxFileSize: 10 * 1024 * 1024, // 10MB limit
+      filter: ({ mimetype }) => mimetype && mimetype.startsWith('image/'),
+    });
+    
+    form.parse(req, (err, fields, files) => {
+      if (err) reject(err);
+      else resolve({ fields, files });
+    });
+  });
+}
+
+export default async function handler(req, res) {
+  // Enable CORS
+  res.setHeader("Access-Control-Allow-Credentials", "true");
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "GET,OPTIONS,PATCH,DELETE,POST,PUT");
+  res.setHeader("Access-Control-Allow-Headers", "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version");
+
+  if (req.method === "OPTIONS") {
+    res.status(200).end();
+    return;
+  }
+
+  if (req.method !== "POST") {
+    return res.status(405).json({ error: "Method not allowed" });
+  }
+
+  try {
+    if (!process.env.GEMINI_API_KEY) {
+      return res.status(500).json({ error: "Gemini API key not configured" });
+    }
+
+    // Parse the uploaded file
+    const { files } = await parseForm(req);
+    const imageFile = Array.isArray(files.image) ? files.image[0] : files.image;
+    
+    console.log('Uploaded file structure:', JSON.stringify(imageFile, null, 2));
+    
+    if (!imageFile) {
+      return res.status(400).json({ error: "Image file is required" });
+    }
+
+    // Read the file and convert to base64
+    // Handle both old and new formidable property names
+    const filePath = imageFile.filepath || imageFile.path;
+    console.log('File path:', filePath);
+    
+    if (!filePath) {
+      console.error('No valid file path found. Available properties:', Object.keys(imageFile));
+      return res.status(400).json({ 
+        error: "Invalid file upload - no file path found",
+        debug: Object.keys(imageFile)
+      });
+    }
+    
+    const fileBuffer = fs.readFileSync(filePath);
+    const imageBase64 = fileBuffer.toString('base64');
+
     const prompt = `
 You are an expert kolam analyst with deep knowledge of South Indian traditional art forms. Analyze this kolam pattern image carefully and provide a detailed, accurate assessment.
 
@@ -29,7 +137,7 @@ Please analyze the image systematically and return a valid JSON response with th
     "entropy": <decimal 1.0-3.5: 1.0-1.5 simple, 1.5-2.5 moderate, 2.5+ complex>
   },
   "mathematicalPrinciples": [
-    "<Select 3-5 from: 'Dot Matrix Foundation', 'Continuous Line Drawing', 'Geometric Symmetry', 'Fractal Patterns', 'Golden Ratio Proportions', 'Tessellation Principles', 'Topological Loops', 'Angular Relationships'>",
+    "<Select 3-5 from: 'Dot Matrix Foundation', 'Continuous Line Drawing', 'Geometric Symmetry', 'Fractal Patterns', 'Golden Ratio Proportions', 'Tessellation Principles', 'Topological Loops', 'Angular Relationships'>"
   ],
   "culturalDescription": [
     "<Describe the kolam's traditional purpose - daily ritual, festival, welcome, protection>",
@@ -48,8 +156,35 @@ Please analyze the image systematically and return a valid JSON response with th
 }
 
 CRITICAL INSTRUCTIONS:
-- Count actual visible elements, don't estimate
+- Count actual visible elements, don't estimate randomly
 - If the image is unclear or not a kolam, indicate this in the analysis
 - Use realistic numbers based on what you can observe
 - Provide meaningful cultural insights, not generic statements
 - Ensure all JSON syntax is valid with proper quotes and commas
+`;
+
+    const imageData = {
+      inlineData: {
+        mimeType: imageFile.mimetype,
+        data: imageBase64,
+      },
+    };
+
+    const { text, modelUsed } = await tryModelWithFallback(prompt, imageData);
+
+    res.json({
+      success: true,
+      analysis: text,
+      filename: imageFile.originalFilename || imageFile.name || 'uploaded-image',
+      fileSize: imageFile.size,
+      modelUsed: modelUsed,
+      timestamp: new Date().toISOString(),
+    });
+  } catch (error) {
+    console.error("Error analyzing kolam image:", error);
+    res.status(500).json({
+      error: "Failed to analyze kolam image",
+      details: error instanceof Error ? error.message : "Unknown error",
+    });
+  }
+}
