@@ -15,6 +15,39 @@ const PORT = process.env.PORT || 3001;
 // Initialize Gemini AI
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
 
+// Helper function to try model with fallback
+async function tryModelWithFallback(prompt: string, imageData?: any) {
+  let model = genAI.getGenerativeModel({ model: "gemini-2.5-pro" });
+  let modelUsed = "gemini-2.5-pro";
+  
+  try {
+    const content = imageData ? [prompt, imageData] : prompt;
+    const result = await model.generateContent(content);
+    const response = await result.response;
+    return { text: response.text(), modelUsed };
+  } catch (error: any) {
+    // Check if error is due to model overload or capacity issues
+    if (error?.message?.includes('overload') || 
+        error?.message?.includes('capacity') || 
+        error?.message?.includes('quota') ||
+        error?.status === 429 ||
+        error?.status === 503) {
+      
+      console.log('Pro model overloaded, falling back to Flash model');
+      model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+      modelUsed = "gemini-2.5-flash";
+      
+      const content = imageData ? [prompt, imageData] : prompt;
+      const result = await model.generateContent(content);
+      const response = await result.response;
+      return { text: response.text(), modelUsed };
+    }
+    
+    // Re-throw if it's not a capacity issue
+    throw error;
+  }
+}
+
 // Middleware
 app.use(
   cors({
@@ -60,9 +93,6 @@ app.post("/api/generate", async (req, res) => {
       return res.status(500).json({ error: "Gemini API key not configured" });
     }
 
-
-    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
-
     // Enhanced prompt for kolam generation
     const enhancedPrompt = `
 You are an expert in South Indian kolam art and traditional geometric patterns. 
@@ -81,15 +111,13 @@ Please provide a comprehensive response that includes:
 Format your response in a clear, structured json that would help someone actually create this kolam pattern.
 `;
 
-    const result = await model.generateContent(enhancedPrompt);
-    const response = await result.response;
-    const text = response.text();
-
+    const { text, modelUsed } = await tryModelWithFallback(enhancedPrompt);
 
     res.json({
       success: true,
       response: text,
       prompt: prompt,
+      modelUsed: modelUsed,
       timestamp: new Date().toISOString(),
     });
   } catch (error) {
@@ -111,9 +139,6 @@ app.post("/api/analyze", upload.single("image"), async (req, res) => {
     if (!process.env.GEMINI_API_KEY) {
       return res.status(500).json({ error: "Gemini API key not configured" });
     }
-
-
-    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
     // Convert image buffer to base64
     const imageBase64 = req.file.buffer.toString("base64");
@@ -165,25 +190,21 @@ Please return your response as a valid JSON object with the following structure:
 Ensure all numerical values are realistic and based on actual analysis of the image. The cultural description should be an array of meaningful bullet points about the kolam's significance, history, and cultural context.
 `;
 
-    const result = await model.generateContent([
-      prompt,
-      {
-        inlineData: {
-          mimeType: req.file.mimetype,
-          data: imageBase64,
-        },
+    const imageData = {
+      inlineData: {
+        mimeType: req.file.mimetype,
+        data: imageBase64,
       },
-    ]);
+    };
 
-    const response = await result.response;
-    const text = response.text();
-
+    const { text, modelUsed } = await tryModelWithFallback(prompt, imageData);
 
     res.json({
       success: true,
       analysis: text,
-      filename: req.file.originalname,
-      fileSize: req.file.size,
+      filename: req.file?.originalname,
+      fileSize: req.file?.size,
+      modelUsed: modelUsed,
       timestamp: new Date().toISOString(),
     });
   } catch (error) {
