@@ -23,15 +23,6 @@ export default defineConfig(({ mode }) => ({
     },
   },
   build: {
-    chunkSizeWarningLimit: 1000, // Increase limit to 1MB
-    rollupOptions: {
-      output: {
-        manualChunks: {
-          vendor: ['react', 'react-dom'],
-          ui: ['@radix-ui/react-dialog', '@radix-ui/react-dropdown-menu'],
-          ai: ['@google/generative-ai']
-        }
-      }
-    }
-  }
+    chunkSizeWarningLimit: 2000 // or a higher value that fits your use-case
+  },
 }));
