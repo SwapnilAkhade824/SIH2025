@@ -88,68 +88,55 @@ export function PatternAnalyzer() {
 
     setIsAnalyzing(true);
     try {
+      console.log('Starting kolam analysis...');
       const res = await analyzeKolamImage(selectedFile);
+      console.log('API Response received:', res);
       
       // Try to parse the JSON response
       let parsedAnalysis;
       try {
         // Remove any markdown code block formatting if present
         const cleanedResponse = res.analysis.replace(/```json\n?|```\n?/g, '').trim();
+        console.log('Cleaned response:', cleanedResponse);
         parsedAnalysis = JSON.parse(cleanedResponse);
+        console.log('Parsed analysis:', parsedAnalysis);
       } catch (parseError) {
-        // Fallback to default structure if JSON parsing fails
-        console.warn('Failed to parse JSON response, using fallback:', parseError);
-        parsedAnalysis = {
-          dotAnalysis: {
-            detected: Math.floor(Math.random() * 50) + 20,
-            validated: Math.floor(Math.random() * 50) + 20,
-            precision: 0.94 + Math.random() * 0.05
-          },
-          symmetryAnalysis: {
-            type: "Radial Symmetry",
-            axisCount: 4,
-            rotationAngle: 90,
-            score: 0.92 + Math.random() * 0.07
-          },
-          complexityAnalysis: {
-            level: "Intermediate",
-            score: 6 + Math.floor(Math.random() * 3),
-            patternCount: 3 + Math.floor(Math.random() * 3),
-            entropy: 2.1 + Math.random() * 0.5
-          },
-          mathematicalPrinciples: [
-            "Traditional Dot Matrix",
-            "Symmetry Analysis",
-            "Pattern Flow",
-            "Geometric Relations"
-          ],
-          culturalDescription: [
-            "Traditional South Indian kolam pattern",
-            "Represents prosperity and welcome",
-            "Used in daily morning rituals",
-            "Demonstrates mathematical precision",
-            "Connects to ancient geometric traditions",
-            "Symbol of cosmic harmony"
-          ],
-          patternDetails: {
-            traditionalName: "Classic Kolam",
-            region: "Tamil Nadu",
-            difficulty: "30-45 minutes",
-            authenticity: "High"
-          }
-        };
+        console.error('JSON parsing failed:', parseError);
+        console.log('Raw response:', res.analysis);
+        
+        // Show error to user instead of using fallback
+        toast({
+          title: "Analysis Response Error",
+          description: "The AI returned an invalid response format. Please try again.",
+          variant: "destructive",
+        });
+        return;
       }
       
       setAnalysisResult(parsedAnalysis);
 
       toast({
         title: "Analysis Complete!",
-        description: `Analyzed ${res.filename} successfully`,
+        description: `Analyzed ${res.filename} successfully using ${res.modelUsed}`,
       });
     } catch (error: unknown) {
+      console.error('Analysis error:', error);
+      
+      let errorMessage = "There was an error analyzing your kolam. Please try again.";
+      
+      if (error instanceof Error) {
+        if (error.message.includes('Failed to fetch')) {
+          errorMessage = "Cannot connect to the analysis server. Please check if the server is running.";
+        } else if (error.message.includes('API key not configured')) {
+          errorMessage = "API key is not configured. Please set up your Gemini API key.";
+        } else {
+          errorMessage = error.message;
+        }
+      }
+      
       toast({
         title: "Analysis Failed",
-        description: error instanceof Error ? error.message : "There was an error analyzing your kolam. Please try again.",
+        description: errorMessage,
         variant: "destructive",
       });
     } finally {
