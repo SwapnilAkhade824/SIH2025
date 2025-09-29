@@ -31,7 +31,7 @@ const posts = [
       level: "Master",
       location: "Chennai, Tamil Nadu"
     },
-    image: "/api/placeholder/300/300",
+    image: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=300&h=300&fit=crop&crop=center",
     title: "Festival Kolam for Pongal",
     description: "Traditional 13-dot kolam with rice flour and colored powders. Took 2 hours to complete!",
     category: "Traditional",
@@ -49,7 +49,7 @@ const posts = [
       level: "Intermediate",
       location: "Bangalore, Karnataka"
     },
-    image: "/api/placeholder/300/300",
+    image: "https://images.unsplash.com/photo-1582719508461-905c673771fd?w=300&h=300&fit=crop&crop=center",
     title: "Digital Kolam Creation",
     description: "Created this geometric pattern using KOLAM AI tools. Perfect symmetry achieved!",
     category: "Digital",
@@ -67,7 +67,7 @@ const posts = [
       level: "Expert", 
       location: "Madurai, Tamil Nadu"
     },
-    image: "/api/placeholder/300/300",
+    image: "https://images.unsplash.com/photo-1544967882-1f3540e4ad8b?w=300&h=300&fit=crop&crop=center",
     title: "Competition Entry - Lotus Mandala",
     description: "My entry for the Monthly Pattern Challenge. 25-dot complex design with temple architecture inspiration.",
     category: "Competition",
@@ -362,12 +362,23 @@ export default function Community() {
               </CardHeader>
 
               <CardContent className="space-y-4">
-                {/* Image Placeholder */}
-                <div className="aspect-square bg-gradient-to-br from-primary/5 to-accent/5 rounded-xl border border-primary/10 flex items-center justify-center">
-                  <div className="text-center">
-                    <Upload className="w-12 h-12 text-primary/40 mx-auto mb-2" />
-                    <p className="text-primary/60 font-medium">{post.title}</p>
-                  </div>
+                {/* Post Image */}
+                <div className="aspect-square bg-gradient-to-br from-primary/5 to-accent/5 rounded-xl border border-primary/10 overflow-hidden">
+                  {post.image ? (
+                    <img 
+                      src={post.image} 
+                      alt={post.title}
+                      className="w-full h-full object-cover hover:scale-105 transition-transform duration-300 cursor-pointer"
+                      onClick={() => setSelectedPost(post)}
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center">
+                      <div className="text-center">
+                        <Upload className="w-12 h-12 text-primary/40 mx-auto mb-2" />
+                        <p className="text-primary/60 font-medium">{post.title}</p>
+                      </div>
+                    </div>
+                  )}
                 </div>
 
                 <div>
