@@ -82,14 +82,28 @@ export default async function handler(req, res) {
 
     // Parse the uploaded file
     const { files } = await parseForm(req);
-    const imageFile = files.image;
+    const imageFile = Array.isArray(files.image) ? files.image[0] : files.image;
+    
+    console.log('Uploaded file structure:', JSON.stringify(imageFile, null, 2));
     
     if (!imageFile) {
       return res.status(400).json({ error: "Image file is required" });
     }
 
     // Read the file and convert to base64
-    const fileBuffer = fs.readFileSync(imageFile.filepath);
+    // Handle both old and new formidable property names
+    const filePath = imageFile.filepath || imageFile.path;
+    console.log('File path:', filePath);
+    
+    if (!filePath) {
+      console.error('No valid file path found. Available properties:', Object.keys(imageFile));
+      return res.status(400).json({ 
+        error: "Invalid file upload - no file path found",
+        debug: Object.keys(imageFile)
+      });
+    }
+    
+    const fileBuffer = fs.readFileSync(filePath);
     const imageBase64 = fileBuffer.toString('base64');
 
     const prompt = `
@@ -151,7 +165,7 @@ Ensure all numerical values are realistic and based on actual analysis of the im
     res.json({
       success: true,
       analysis: text,
-      filename: imageFile.originalFilename,
+      filename: imageFile.originalFilename || imageFile.name || 'uploaded-image',
       fileSize: imageFile.size,
       modelUsed: modelUsed,
       timestamp: new Date().toISOString(),
