@@ -1,73 +1,146 @@
-# Welcome to your Lovable project
+# KolamAI - Traditional Pattern Analysis & Recreation
 
-## Project info
+> **Preserving South Indian Heritage Through Modern Technology**
 
-**URL**: https://lovable.dev/projects/1abecaaa-5548-45b0-b2e7-c3cf902b30e6
+KolamAI is an innovative web application that combines traditional South Indian kolam art with cutting-edge AI technology. Our platform enables users to analyze, create, and share beautiful kolam patterns while learning about their cultural significance and mathematical principles.
 
-## How can I edit this code?
+## 🎨 Features
 
-There are several ways of editing your application.
+### Pattern Analysis
+- **AI-Powered Analysis**: Upload kolam images for detailed pattern recognition and cultural insights
+- **Mathematical Principles**: Discover the geometry, symmetry, and mathematical concepts behind traditional designs
+- **Cultural Context**: Learn about the historical significance and regional variations of kolam patterns
 
-**Use Lovable**
+### Pattern Creation
+- **Interactive Design Studio**: Create custom kolam patterns with intuitive parameter controls
+- **Visual Pattern Generator**: Real-time SVG rendering with mathematical accuracy
+- **Export Functionality**: Download patterns in high-quality SVG and PNG formats
+- **Template Library**: Quick-start templates for different skill levels
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/1abecaaa-5548-45b0-b2e7-c3cf902b30e6) and start prompting.
+### Community Platform
+- **Pattern Sharing**: Share your creations with the global kolam community
+- **Challenges & Contests**: Participate in themed competitions and learning challenges
+- **Social Features**: Like, comment, and connect with fellow kolam enthusiasts
+- **Cultural Exchange**: Explore patterns from different regions and traditions
 
-Changes made via Lovable will be committed automatically to this repo.
+### Interactive Games
+- **Dot Connector**: Learn pattern creation through engaging gameplay
+- **Pattern Memory**: Test your visual memory with traditional designs
+- **Symmetry Master**: Master the art of perfect symmetrical patterns
 
-**Use your preferred IDE**
+## 🚀 Technology Stack
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+- **Frontend**: React 18 with TypeScript
+- **Styling**: Tailwind CSS with custom kolam-inspired design system
+- **UI Components**: shadcn/ui for consistent, accessible interface
+- **Build Tool**: Vite for fast development and optimized builds
+- **Backend**: Node.js with Express for API endpoints
+- **AI Integration**: Google Gemini AI for pattern analysis and cultural insights
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+## 🛠️ Installation & Setup
 
-Follow these steps:
+### Prerequisites
+- Node.js (v18 or higher)
+- npm or yarn package manager
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+### Local Development
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/SwapnilAkhade824/SIH2025.git
+   cd KolamAI_OpenAI
+   ```
 
-# Step 3: Install the necessary dependencies.
-npm i
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+3. **Environment Setup**
+   Create a `.env` file in the root directory:
+   ```env
+   GEMINI_API_KEY=your_gemini_api_key_here
+   ```
+
+4. **Start development servers**
+   
+   Frontend:
+   ```bash
+   npm run dev
+   ```
+   
+   Backend:
+   ```bash
+   npm run server
+   ```
+
+5. **Access the application**
+   - Frontend: http://localhost:5173
+   - Backend API: http://localhost:3000
+
+## 📁 Project Structure
+
+```
+KolamAI_OpenAI/
+├── src/
+│   ├── components/          # Reusable UI components
+│   │   ├── games/          # Game-specific components
+│   │   ├── community/      # Community features
+│   │   └── ui/             # Base UI components
+│   ├── pages/              # Main application pages
+│   ├── lib/                # Utilities and configurations
+│   └── hooks/              # Custom React hooks
+├── server/                 # Backend API server
+├── public/                 # Static assets
+└── docs/                   # Documentation
 ```
 
-**Edit a file directly in GitHub**
+## 🎯 Key Components
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+### Pattern Generator
+- Mathematical algorithms for 5 kolam types (radial, mandala, geometric, linear, floral)
+- SVG-based rendering with traditional color palettes
+- Animated drawing sequences with cultural authenticity
 
-**Use GitHub Codespaces**
+### AI Analysis Engine
+- Pattern recognition and classification
+- Cultural significance extraction
+- Mathematical principle identification
+- Regional variation analysis
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+### Community Features
+- User-generated content management
+- Challenge and contest system
+- Social interaction tools
+- Pattern sharing and discovery
 
-## What technologies are used for this project?
+## 🌟 Contributing
 
-This project is built with:
+We welcome contributions from developers, designers, and cultural enthusiasts! Please read our contributing guidelines before submitting pull requests.
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+### Development Guidelines
+- Follow TypeScript best practices
+- Maintain consistent code formatting with Prettier
+- Write meaningful commit messages
+- Test thoroughly before submitting PRs
 
-## How can I deploy this project?
+## 📄 License
 
-Simply open [Lovable](https://lovable.dev/projects/1abecaaa-5548-45b0-b2e7-c3cf902b30e6) and click on Share -> Publish.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## Can I connect a custom domain to my Lovable project?
+## 🙏 Acknowledgments
 
-Yes, you can!
+- Traditional kolam artists and cultural preservationists
+- South Indian heritage communities
+- Open source contributors and maintainers
+- SIH 2025 organizing committee
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+## 📞 Contact
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+**Team HeritageXtech**
+- Project Repository: [GitHub](https://github.com/SwapnilAkhade824/SIH2025)
+- Issues & Support: [GitHub Issues](https://github.com/SwapnilAkhade824/SIH2025/issues)
+
+---
+
+*Crafted with ♥ by HeritageXtech for SIH 2025*
