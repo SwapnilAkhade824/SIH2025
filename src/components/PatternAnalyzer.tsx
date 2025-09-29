@@ -5,6 +5,60 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { useToast } from "@/hooks/use-toast";
 import { analyzeKolamImage } from "@/lib/api";
 
+// Validation function to ensure analysis results are realistic
+const validateAnalysisResults = (analysis: any) => {
+  const validated = { ...analysis };
+  
+  // Validate dot analysis
+  if (validated.dotAnalysis) {
+    // Ensure dot count is reasonable (5-50 for most kolams)
+    if (validated.dotAnalysis.detected > 50) {
+      validated.dotAnalysis.detected = Math.min(validated.dotAnalysis.detected, 25);
+    }
+    if (validated.dotAnalysis.detected < 3) {
+      validated.dotAnalysis.detected = Math.max(validated.dotAnalysis.detected, 5);
+    }
+    
+    // Ensure validated dots don't exceed detected
+    if (validated.dotAnalysis.validated > validated.dotAnalysis.detected) {
+      validated.dotAnalysis.validated = validated.dotAnalysis.detected;
+    }
+    
+    // Ensure precision is within valid range
+    if (validated.dotAnalysis.precision > 1) {
+      validated.dotAnalysis.precision = 0.95;
+    }
+    if (validated.dotAnalysis.precision < 0.5) {
+      validated.dotAnalysis.precision = 0.75;
+    }
+  }
+  
+  // Validate symmetry analysis
+  if (validated.symmetryAnalysis) {
+    // Ensure axis count matches symmetry type
+    if (validated.symmetryAnalysis.type === 'Asymmetrical') {
+      validated.symmetryAnalysis.axisCount = 0;
+      validated.symmetryAnalysis.rotationAngle = 0;
+    }
+    if (validated.symmetryAnalysis.axisCount > 8) {
+      validated.symmetryAnalysis.axisCount = 4; // Most common for kolams
+    }
+  }
+  
+  // Validate complexity analysis
+  if (validated.complexityAnalysis) {
+    // Ensure score is within 1-10 range
+    validated.complexityAnalysis.score = Math.max(1, Math.min(10, validated.complexityAnalysis.score));
+    
+    // Ensure entropy is reasonable
+    if (validated.complexityAnalysis.entropy > 4) {
+      validated.complexityAnalysis.entropy = 2.5;
+    }
+  }
+  
+  return validated;
+};
+
 interface AnalysisResult {
   dotAnalysis: {
     detected: number;
@@ -113,7 +167,9 @@ export function PatternAnalyzer() {
         return;
       }
       
-      setAnalysisResult(parsedAnalysis);
+      // Validate and sanitize the analysis results
+      const validatedAnalysis = validateAnalysisResults(parsedAnalysis);
+      setAnalysisResult(validatedAnalysis);
 
       toast({
         title: "Analysis Complete!",

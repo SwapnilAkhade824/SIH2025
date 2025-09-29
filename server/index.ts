@@ -144,16 +144,24 @@ app.post("/api/analyze", upload.single("image"), async (req, res) => {
     const imageBase64 = req.file.buffer.toString("base64");
 
     const prompt = `
-You are an expert kolam analyst with deep knowledge of South Indian traditional art forms. Analyze this kolam pattern image carefully and provide a detailed, accurate assessment.
+You are a master kolam artist and analyst with 30+ years of experience in South Indian traditional art forms. Study this kolam pattern image with extreme care and precision.
 
-IMPORTANT ANALYSIS GUIDELINES:
-1. Count dots/points carefully - look for the grid structure that forms the foundation
-2. Examine symmetry by identifying repeating patterns and mirror lines
-3. Assess complexity based on the number of loops, intersections, and pattern density
-4. Identify traditional elements like lotus petals, geometric shapes, or temple motifs
-5. Base all numerical values on actual visual observation, not assumptions
+CRITICAL ANALYSIS METHODOLOGY:
+1. FIRST - Determine if this is actually a kolam (traditional dot-grid pattern) or another type of design
+2. DOTS - Count ONLY visible dots/points that serve as grid intersections. Look for small circles, dots, or intersection markers
+3. LINES - Trace the continuous lines that connect or loop around dots. Count actual line segments, not imaginary ones
+4. SYMMETRY - Test by mentally folding/rotating the image. Don't assume symmetry exists
+5. PATTERNS - Identify actual repeated motifs, not similar-looking elements
+6. CULTURAL CONTEXT - Only reference authentic kolam traditions you can confidently identify
 
-Please analyze the image systematically and return a valid JSON response with this exact structure:
+STEP-BY-STEP ANALYSIS PROCESS:
+Step 1: Image Quality Check - Is the image clear enough for accurate analysis?
+Step 2: Kolam Verification - Does this follow traditional kolam construction (dots + connecting lines)?
+Step 3: Systematic Counting - Count visible elements methodically, section by section
+Step 4: Pattern Recognition - Identify specific traditional motifs (lotus, geometric shapes, etc.)
+Step 5: Cultural Classification - Match to known kolam types and regional styles
+
+Return a valid JSON response with this exact structure:
 
 {
   "dotAnalysis": {
@@ -192,12 +200,21 @@ Please analyze the image systematically and return a valid JSON response with th
   }
 }
 
-CRITICAL INSTRUCTIONS:
-- Count actual visible elements, don't estimate randomly
-- If the image is unclear or not a kolam, indicate this in the analysis
-- Use realistic numbers based on what you can observe
-- Provide meaningful cultural insights, not generic statements
-- Ensure all JSON syntax is valid with proper quotes and commas
+CRITICAL VALIDATION RULES:
+- If image is unclear/blurry, set precision below 0.8 and mention in analysis
+- If NOT a traditional kolam, set authenticity to "Low" and explain in cultural description
+- If you cannot count dots accurately, estimate conservatively (err on lower side)
+- If no clear symmetry exists, use "Asymmetrical" and axisCount: 0
+- If pattern is too complex to analyze, indicate limitations in your response
+- ALWAYS provide valid JSON - use null for unknown values, not placeholder text
+- Include confidence level in your analysis when uncertain
+
+RESPONSE REQUIREMENTS:
+- All numbers must be realistic and based on actual observation
+- Cultural descriptions must be factual, not generic statements
+- If unsure about traditional name, use "Contemporary Design" or "Unidentified Pattern"
+- Mention any analysis limitations or uncertainties
+- Ensure JSON is perfectly formatted with proper quotes and commas
 `;
 
     const imageData = {
