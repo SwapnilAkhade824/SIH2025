@@ -1,0 +1,258 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* KOLAM AI Design System - Traditional South Indian Heritage meets Modern Tech */
+
+@layer base {
+  :root {
+    /* Traditional Kolam Color Palette */
+    --background: 0 0% 98%;
+    --foreground: 0 20% 15%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 0 20% 15%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 20% 15%;
+
+    /* Deep Traditional Maroon - Primary Brand Color */
+    --primary: 0 65% 35%;
+    --primary-foreground: 0 0% 98%;
+    --primary-light: 0 45% 55%;
+    --primary-dark: 0 75% 25%;
+
+    /* Warm Secondary Tones */
+    --secondary: 30 25% 90%;
+    --secondary-foreground: 0 20% 15%;
+
+    --muted: 20 15% 92%;
+    --muted-foreground: 0 10% 45%;
+
+    /* Traditional Gold Accent */
+    --accent: 45 85% 65%;
+    --accent-foreground: 0 20% 15%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 20 15% 88%;
+    --input: 20 15% 88%;
+    --ring: 0 65% 35%;
+
+    /* Traditional Design Elements */
+    --kolam-gold: 45 85% 65%;
+    --kolam-cream: 35 35% 95%;
+    --temple-stone: 25 15% 85%;
+    --sacred-red: 0 75% 45%;
+
+    /* Gradients for Traditional Feel */
+    --gradient-primary: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary-light)) 50%, hsl(var(--primary-dark)) 100%);
+    --gradient-hero: linear-gradient(135deg, hsl(var(--primary-dark)) 0%, hsl(var(--primary)) 40%, hsl(var(--kolam-gold)) 100%);
+    --gradient-card: linear-gradient(145deg, hsl(var(--card)) 0%, hsl(var(--kolam-cream)) 100%);
+    --gradient-accent: linear-gradient(90deg, hsl(var(--accent)) 0%, hsl(var(--kolam-gold)) 100%);
+
+    /* Traditional Pattern Shadows */
+    --shadow-traditional: 0 8px 32px -8px hsl(var(--primary) / 0.15);
+    --shadow-kolam: 0 4px 20px -4px hsl(var(--primary) / 0.25);
+    --shadow-elevated: 0 12px 40px -12px hsl(var(--primary) / 0.3);
+    
+    /* Animation Variables */
+    --transition-traditional: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    --transition-smooth: all 0.3s ease-in-out;
+
+    --radius: 0.75rem;
+
+    --sidebar-background: 0 0% 98%;
+
+    --sidebar-foreground: 240 5.3% 26.1%;
+
+    --sidebar-primary: 240 5.9% 10%;
+
+    --sidebar-primary-foreground: 0 0% 98%;
+
+    --sidebar-accent: 240 4.8% 95.9%;
+
+    --sidebar-accent-foreground: 240 5.9% 10%;
+
+    --sidebar-border: 220 13% 91%;
+
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .dark {
+    /* Dark mode with traditional warmth */
+    --background: 0 20% 8%;
+    --foreground: 0 0% 95%;
+
+    --card: 0 15% 12%;
+    --card-foreground: 0 0% 95%;
+
+    --popover: 0 15% 12%;
+    --popover-foreground: 0 0% 95%;
+
+    --primary: 0 45% 55%;
+    --primary-foreground: 0 0% 95%;
+    --primary-light: 0 55% 65%;
+    --primary-dark: 0 65% 45%;
+
+    --secondary: 0 10% 18%;
+    --secondary-foreground: 0 0% 85%;
+
+    --muted: 0 8% 15%;
+    --muted-foreground: 0 5% 65%;
+
+    --accent: 45 65% 55%;
+    --accent-foreground: 0 0% 95%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 0 10% 20%;
+    --input: 0 10% 20%;
+    --ring: 0 45% 55%;
+
+    --kolam-gold: 45 75% 55%;
+    --kolam-cream: 35 25% 85%;
+    --temple-stone: 25 10% 75%;
+    --sacred-red: 0 65% 55%;
+
+    --sidebar-background: 0 15% 10%;
+    --sidebar-foreground: 0 0% 90%;
+    --sidebar-primary: 0 45% 55%;
+    --sidebar-primary-foreground: 0 0% 95%;
+    --sidebar-accent: 0 10% 15%;
+    --sidebar-accent-foreground: 0 0% 85%;
+    --sidebar-border: 0 10% 18%;
+    --sidebar-ring: 0 45% 55%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans;
+    background-image: 
+      radial-gradient(circle at 25% 25%, hsl(var(--primary) / 0.03) 0%, transparent 50%),
+      radial-gradient(circle at 75% 75%, hsl(var(--accent) / 0.02) 0%, transparent 50%);
+  }
+
+  /* Traditional Kolam Pattern Background */
+  .kolam-pattern {
+    background-image: 
+      radial-gradient(circle at 20px 20px, hsl(var(--primary) / 0.08) 2px, transparent 2px),
+      radial-gradient(circle at 60px 60px, hsl(var(--accent) / 0.05) 1px, transparent 1px);
+    background-size: 80px 80px, 40px 40px;
+  }
+
+  /* Geometric dot patterns inspired by Kolam */
+  .dot-pattern {
+    background-image: 
+      radial-gradient(circle, hsl(var(--primary) / 0.1) 1px, transparent 1px);
+    background-size: 20px 20px;
+  }
+}
+
+@layer components {
+  /* Hero Button with Traditional Styling */
+  .btn-hero {
+    @apply bg-gradient-to-r from-primary via-primary-light to-accent 
+           text-primary-foreground px-8 py-4 rounded-xl font-semibold
+           shadow-[var(--shadow-kolam)] border border-primary/20
+           transition-[var(--transition-traditional)]
+           hover:shadow-[var(--shadow-elevated)] hover:scale-105
+           active:scale-95;
+  }
+
+  /* Traditional Card Styling */
+  .card-traditional {
+    @apply bg-gradient-to-br from-card to-kolam-cream/50
+           border border-primary/10 rounded-2xl 
+           shadow-[var(--shadow-traditional)]
+           transition-[var(--transition-traditional)]
+           hover:shadow-[var(--shadow-elevated)] hover:-translate-y-1;
+  }
+
+  /* Dashboard Navigation */
+  .nav-dashboard {
+    @apply flex items-center px-6 py-3 rounded-lg font-medium
+           transition-[var(--transition-smooth)]
+           hover:bg-primary/5 hover:text-primary;
+  }
+
+  .nav-dashboard.active {
+    @apply bg-gradient-to-r from-primary to-primary-light text-primary-foreground
+           shadow-[var(--shadow-kolam)];
+  }
+
+  /* Upload Area Styling */
+  .upload-area {
+    @apply border-2 border-dashed border-primary/30 rounded-2xl p-12
+           bg-gradient-to-br from-background to-kolam-cream/30
+           transition-[var(--transition-traditional)]
+           hover:border-primary/50 hover:bg-primary/5;
+  }
+
+  /* Pattern Analysis Cards */
+  .analysis-card {
+    @apply bg-gradient-to-br from-card to-secondary/30
+           border border-primary/20 rounded-xl p-6
+           shadow-[var(--shadow-traditional)];
+  }
+
+  /* Traditional divider */
+  .divider-traditional {
+    @apply h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent;
+  }
+}
+
+@layer utilities {
+  /* Kolam Pattern Animation Styles */
+  @keyframes draw {
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+
+  @keyframes kolam-glow {
+    0%, 100% {
+      box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
+    }
+    50% {
+      box-shadow: 0 0 40px rgba(212, 175, 55, 0.6);
+    }
+  }
+
+  @keyframes traditional-fade {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-draw {
+    animation: draw 2s ease-in-out forwards;
+  }
+
+  .animate-kolam-glow {
+    animation: kolam-glow 2s ease-in-out infinite;
+  }
+
+  .animate-traditional-fade {
+    animation: traditional-fade 0.6s ease-out forwards;
+  }
+
+  /* Font families for traditional feel */
+  .font-traditional {
+    font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+    font-weight: 600;
+    letter-spacing: -0.025em;
+  }
+}
