@@ -31,7 +31,7 @@ const posts = [
       level: "Master",
       location: "Chennai, Tamil Nadu"
     },
-    image: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=300&h=300&fit=crop&crop=center",
+    image: "/images/1.png",
     title: "Festival Kolam for Pongal",
     description: "Traditional 13-dot kolam with rice flour and colored powders. Took 2 hours to complete!",
     category: "Traditional",
@@ -49,7 +49,7 @@ const posts = [
       level: "Intermediate",
       location: "Bangalore, Karnataka"
     },
-    image: "https://images.unsplash.com/photo-1582719508461-905c673771fd?w=300&h=300&fit=crop&crop=center",
+    image: "/images/2.png",
     title: "Digital Kolam Creation",
     description: "Created this geometric pattern using KOLAM AI tools. Perfect symmetry achieved!",
     category: "Digital",
@@ -67,7 +67,7 @@ const posts = [
       level: "Expert", 
       location: "Madurai, Tamil Nadu"
     },
-    image: "https://images.unsplash.com/photo-1544967882-1f3540e4ad8b?w=300&h=300&fit=crop&crop=center",
+    image: "/images/3.png",
     title: "Competition Entry - Lotus Mandala",
     description: "My entry for the Monthly Pattern Challenge. 25-dot complex design with temple architecture inspiration.",
     category: "Competition",
