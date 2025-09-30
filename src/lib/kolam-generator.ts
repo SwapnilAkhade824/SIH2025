@@ -31,6 +31,7 @@ export interface GenerationParams {
   symmetry: string;
   loops: number;
   spacing: number;
+  seed?: number; // For pattern variation
 }
 
 // Mathematical utilities for kolam generation
@@ -123,15 +124,21 @@ export class KolamMath {
 // Pattern generators for different kolam types
 export class KolamPatternGenerator {
   static generateRadialPattern(params: GenerationParams): KolamPattern {
-    const { gridSize, complexity, loops, spacing } = params;
+    const { gridSize, complexity, loops, spacing, selectedShapes, seed = Date.now() } = params;
     const center = gridSize / 2;
-    const cellSize = 40;
+    const cellSize = Math.max(30, 400 / gridSize); // Dynamic cell size based on grid
+    
+    // Use seed for consistent randomization
+    const random = (min: number, max: number) => {
+      const x = Math.sin(seed * 9999) * 10000;
+      return min + (x - Math.floor(x)) * (max - min);
+    };
     
     const grid: KolamPoint[][] = [];
     const dots: KolamPoint[] = [];
     const paths: KolamPath[] = [];
     
-    // Initialize grid
+    // Initialize grid with user-specified size
     for (let i = 0; i < gridSize; i++) {
       grid[i] = [];
       for (let j = 0; j < gridSize; j++) {
@@ -146,16 +153,22 @@ export class KolamPatternGenerator {
       }
     }
     
-    // Generate radial paths
+    // Generate radial paths based on user parameters
     const centerX = center * cellSize;
     const centerY = center * cellSize;
+    const maxRadius = Math.min(centerX, centerY) * 0.8;
     
+    // Create concentric circles based on loops parameter
     for (let loop = 1; loop <= loops; loop++) {
-      const radius = loop * spacing * cellSize / 2;
+      const radius = (loop / loops) * maxRadius;
       const points: KolamPoint[] = [];
       
-      // Create circular path
-      for (let angle = 0; angle < 360; angle += 45) {
+      // Angle step based on complexity with slight randomization
+      const baseAngleStep = Math.max(15, 90 - complexity * 5);
+      const angleStep = baseAngleStep + random(-5, 5); // Add variation
+      
+      // Create circular path with complexity-based detail
+      for (let angle = 0; angle < 360; angle += angleStep) {
         const point = KolamMath.polarToCartesian(centerX, centerY, radius, angle);
         points.push({
           x: point.x,
@@ -165,21 +178,32 @@ export class KolamPatternGenerator {
         });
       }
       
+      // Color based on selected shapes or default gradient
+      const colorHue = selectedShapes.includes('lotus') ? 280 : 
+                      selectedShapes.includes('star') ? 45 : 
+                      selectedShapes.includes('circle') ? 200 : 
+                      45 + loop * 30;
+      
       paths.push({
         points,
         isClosed: true,
-        strokeWidth: 3 - (loop * 0.3),
-        color: `hsl(${45 + loop * 30}, 70%, 50%)`
+        strokeWidth: Math.max(1, 4 - (loop * 0.4)),
+        color: `hsl(${colorHue}, 70%, ${60 - loop * 5}%)`
       });
     }
     
-    // Add connecting lines based on complexity
-    if (complexity > 5) {
-      const spokes = Math.min(8, complexity);
-      for (let i = 0; i < spokes; i++) {
-        const angle = (i * 360) / spokes;
-        const outerRadius = loops * spacing * cellSize / 2;
-        const innerPoint = KolamMath.polarToCartesian(centerX, centerY, cellSize / 4, angle);
+    // Add spokes based on complexity and selected shapes with variation
+    const baseSpokeCount = selectedShapes.includes('star') ? 8 : 
+                          selectedShapes.includes('diamond') ? 4 : 
+                          Math.min(12, Math.max(4, complexity));
+    const spokeCount = Math.max(3, Math.floor(baseSpokeCount + random(-1, 2))); // Add variation
+    
+    if (complexity > 3) {
+      for (let i = 0; i < spokeCount; i++) {
+        const angle = (i * 360) / spokeCount;
+        const outerRadius = maxRadius;
+        const innerRadius = maxRadius * 0.2;
+        const innerPoint = KolamMath.polarToCartesian(centerX, centerY, innerRadius, angle);
         const outerPoint = KolamMath.polarToCartesian(centerX, centerY, outerRadius, angle);
         
         paths.push({
@@ -188,10 +212,18 @@ export class KolamPatternGenerator {
             { x: outerPoint.x, y: outerPoint.y, isDot: false, isConnected: true }
           ],
           isClosed: false,
-          strokeWidth: 2,
-          color: '#D4AF37'
+          strokeWidth: Math.max(1, 3 - complexity * 0.2),
+          color: selectedShapes.includes('lotus') ? '#9C27B0' : '#D4AF37'
         });
       }
+    }
+    
+    // Add decorative elements based on selected shapes
+    if (selectedShapes.includes('circle')) {
+      this.addCircleDecorations(paths, centerX, centerY, maxRadius, complexity);
+    }
+    if (selectedShapes.includes('star')) {
+      this.addStarDecorations(paths, centerX, centerY, maxRadius, complexity);
     }
     
     return {
@@ -200,16 +232,16 @@ export class KolamPatternGenerator {
       dots,
       gridSize,
       patternType: 'radial',
-      shapes: params.selectedShapes,
+      shapes: selectedShapes,
       complexity,
       symmetry: params.symmetry
     };
   }
   
   static generateMandalaPattern(params: GenerationParams): KolamPattern {
-    const { gridSize, complexity, loops, spacing } = params;
+    const { gridSize, complexity, loops, spacing, selectedShapes } = params;
     const center = gridSize / 2;
-    const cellSize = 40;
+    const cellSize = Math.max(30, 400 / gridSize);
     const centerX = center * cellSize;
     const centerY = center * cellSize;
     
@@ -232,10 +264,15 @@ export class KolamPatternGenerator {
       }
     }
     
-    // Generate concentric mandala layers
+    // Generate concentric mandala layers based on user input
+    const maxRadius = Math.min(centerX, centerY) * 0.8;
     for (let layer = 1; layer <= loops; layer++) {
-      const radius = layer * spacing * cellSize / 3;
-      const petals = Math.max(6, layer * 2); // More petals in outer layers
+      const radius = (layer / loops) * maxRadius;
+      // Petals based on complexity and selected shapes
+      const basePetals = selectedShapes.includes('lotus') ? 8 : 
+                        selectedShapes.includes('star') ? 6 : 
+                        selectedShapes.includes('circle') ? 12 : 6;
+      const petals = Math.max(basePetals, Math.min(16, basePetals + complexity));
       
       // Create petal pattern
       const petalPoints: KolamPoint[] = [];
@@ -254,7 +291,9 @@ export class KolamPatternGenerator {
           ],
           isClosed: false,
           strokeWidth: 2.5 - (layer * 0.2),
-          color: `hsl(${280 + layer * 20}, 60%, ${60 - layer * 5}%)`
+          color: selectedShapes.includes('lotus') ? `hsl(${300 + layer * 15}, 70%, ${65 - layer * 5}%)` :
+               selectedShapes.includes('star') ? `hsl(${45 + layer * 20}, 80%, ${60 - layer * 3}%)` :
+               `hsl(${200 + layer * 25}, 65%, ${55 - layer * 4}%)`
         });
       }
       
@@ -687,6 +726,64 @@ export class KolamPatternGenerator {
     };
   }
   
+  // Helper methods for decorative elements
+  private static addCircleDecorations(paths: KolamPath[], centerX: number, centerY: number, maxRadius: number, complexity: number) {
+    const decorationCount = Math.min(8, complexity);
+    for (let i = 0; i < decorationCount; i++) {
+      const angle = (i * 360) / decorationCount;
+      const decorRadius = maxRadius * 0.15;
+      const decorCenter = KolamMath.polarToCartesian(centerX, centerY, maxRadius * 0.6, angle);
+      
+      const decorPoints: KolamPoint[] = [];
+      for (let a = 0; a < 360; a += 30) {
+        const point = KolamMath.polarToCartesian(decorCenter.x, decorCenter.y, decorRadius, a);
+        decorPoints.push({
+          x: point.x,
+          y: point.y,
+          isDot: false,
+          isConnected: true
+        });
+      }
+      
+      paths.push({
+        points: decorPoints,
+        isClosed: true,
+        strokeWidth: 1.5,
+        color: '#00BCD4'
+      });
+    }
+  }
+  
+  private static addStarDecorations(paths: KolamPath[], centerX: number, centerY: number, maxRadius: number, complexity: number) {
+    const starCount = Math.min(6, Math.floor(complexity / 2));
+    for (let i = 0; i < starCount; i++) {
+      const angle = (i * 360) / starCount;
+      const starCenter = KolamMath.polarToCartesian(centerX, centerY, maxRadius * 0.7, angle);
+      const starRadius = maxRadius * 0.1;
+      
+      const starPoints: KolamPoint[] = [];
+      for (let j = 0; j < 5; j++) {
+        const outerAngle = j * 72;
+        const innerAngle = outerAngle + 36;
+        
+        const outerPoint = KolamMath.polarToCartesian(starCenter.x, starCenter.y, starRadius, outerAngle);
+        const innerPoint = KolamMath.polarToCartesian(starCenter.x, starCenter.y, starRadius * 0.5, innerAngle);
+        
+        starPoints.push(
+          { x: outerPoint.x, y: outerPoint.y, isDot: false, isConnected: true },
+          { x: innerPoint.x, y: innerPoint.y, isDot: false, isConnected: true }
+        );
+      }
+      
+      paths.push({
+        points: starPoints,
+        isClosed: true,
+        strokeWidth: 1.5,
+        color: '#FF9800'
+      });
+    }
+  }
+
   static generatePattern(params: GenerationParams): KolamPattern {
     switch (params.patternType) {
       case 'radial':

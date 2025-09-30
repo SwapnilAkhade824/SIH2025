@@ -9,9 +9,10 @@ interface KolamRendererProps {
   className?: string;
   showControls?: boolean;
   animated?: boolean;
+  onRegenerate?: () => void;
 }
 
-export function KolamRenderer({ params, className = '', showControls = true, animated = false }: KolamRendererProps) {
+export function KolamRenderer({ params, className = '', showControls = true, animated = false, onRegenerate }: KolamRendererProps) {
   const svgRef = useRef<SVGSVGElement>(null);
   
   const pattern = useMemo(() => {
@@ -242,7 +243,7 @@ export function KolamRenderer({ params, className = '', showControls = true, ani
       {showControls && (
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
-            <Button size="sm" variant="outline" onClick={() => window.location.reload()}>
+            <Button size="sm" variant="outline" onClick={onRegenerate}>
               <RotateCw className="w-4 h-4 mr-2" />
               Regenerate
             </Button>

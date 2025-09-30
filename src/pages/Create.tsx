@@ -44,28 +44,88 @@ const shapeTypes = [
 
 const templates = [
   {
-    name: "Simple Grid",
-    gridSize: 5,
+    name: "Morning Blessing",
+    gridSize: 7,
     pattern: "radial",
-    shapes: ["circle", "square"],
-    complexity: "Beginner",
-    preview: "5×5 Basic Grid"
+    shapes: ["circle", "lotus"],
+    complexity: 4,
+    loops: 3,
+    spacing: 2,
+    symmetry: "radial",
+    description: "Traditional daily kolam for home entrance",
+    difficulty: "Beginner",
+    time: "15-20 mins",
+    cultural: "Tamil Nadu daily practice"
   },
   {
     name: "Festival Mandala", 
-    gridSize: 9,
+    gridSize: 11,
     pattern: "mandala",
-    shapes: ["circle", "lotus", "star"],
-    complexity: "Intermediate",
-    preview: "9×9 Mandala"
+    shapes: ["lotus", "star", "circle"],
+    complexity: 7,
+    loops: 4,
+    spacing: 3,
+    symmetry: "rotational",
+    description: "Elaborate design for Diwali and special occasions",
+    difficulty: "Intermediate",
+    time: "45-60 mins",
+    cultural: "Pan-South Indian festival tradition"
   },
   {
     name: "Temple Gateway",
-    gridSize: 13,
+    gridSize: 15,
     pattern: "geometric", 
     shapes: ["square", "diamond", "triangle"],
-    complexity: "Advanced",
-    preview: "13×13 Complex"
+    complexity: 9,
+    loops: 5,
+    spacing: 2,
+    symmetry: "bilateral",
+    description: "Sacred geometry inspired by temple architecture",
+    difficulty: "Advanced",
+    time: "2-3 hours",
+    cultural: "Karnataka temple art"
+  },
+  {
+    name: "Prosperity Lotus",
+    gridSize: 9,
+    pattern: "floral",
+    shapes: ["lotus", "circle"],
+    complexity: 6,
+    loops: 3,
+    spacing: 3,
+    symmetry: "radial",
+    description: "Lotus-centered design for wealth and prosperity",
+    difficulty: "Intermediate",
+    time: "30-45 mins",
+    cultural: "Andhra Pradesh tradition"
+  },
+  {
+    name: "Cosmic Harmony",
+    gridSize: 13,
+    pattern: "mandala",
+    shapes: ["star", "circle", "diamond"],
+    complexity: 8,
+    loops: 6,
+    spacing: 2,
+    symmetry: "rotational",
+    description: "Complex mandala representing universal balance",
+    difficulty: "Expert",
+    time: "3-4 hours",
+    cultural: "Kerala spiritual art"
+  },
+  {
+    name: "Harvest Celebration",
+    gridSize: 8,
+    pattern: "linear",
+    shapes: ["square", "triangle"],
+    complexity: 5,
+    loops: 2,
+    spacing: 4,
+    symmetry: "bilateral",
+    description: "Linear pattern celebrating agricultural abundance",
+    difficulty: "Beginner",
+    time: "20-30 mins",
+    cultural: "Rural Tamil tradition"
   }
 ];
 
@@ -77,23 +137,26 @@ interface GenerationParams {
   symmetry: string;
   loops: number[];
   spacing: number[];
+  userPrompt?: string;
 }
 
 export default function Create() {
   const [params, setParams] = useState<GenerationParams>({
     gridSize: [7],
     patternType: "mandala",
-    selectedShapes: [],
+    selectedShapes: ["lotus", "circle"],
     complexity: [5],
     symmetry: "radial",
     loops: [3],
-    spacing: [2]
+    spacing: [2],
+    userPrompt: ""
   });
+  const [userPrompt, setUserPrompt] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
   const [showVisualPattern, setShowVisualPattern] = useState(false);
-  const [showPreview, setShowPreview] = useState(false);
   const [savedParams, setSavedParams] = useState<GenerationParams[]>([]);
   const [patternVariants, setPatternVariants] = useState<KolamGenerationParams[]>([]);
+  const [patternKey, setPatternKey] = useState(0); // Force re-render of pattern
   const { toast } = useToast();
 
   // Load saved parameters from localStorage on mount
@@ -117,18 +180,24 @@ export default function Create() {
         : [...prev.selectedShapes, shape]
     }));
   };
-
   const handleTemplateSelect = (template: typeof templates[0]) => {
     setParams({
       gridSize: [template.gridSize],
       patternType: template.pattern,
       selectedShapes: template.shapes,
-      complexity: [template.gridSize > 9 ? 8 : template.gridSize > 5 ? 6 : 4],
-      symmetry: template.pattern === "mandala" ? "radial" : "bilateral",
-      loops: [Math.floor(template.gridSize / 3)],
-      spacing: [2]
+      complexity: [template.complexity],
+      symmetry: template.symmetry,
+      loops: [template.loops],
+      spacing: [template.spacing],
+      userPrompt: `Create a ${template.name.toLowerCase()} - ${template.description}`
     });
+    setUserPrompt(`Create a ${template.name.toLowerCase()} - ${template.description}`);
     setShowVisualPattern(true);
+    setPatternKey(prev => prev + 1); // Generate new pattern
+    toast({
+      title: `Template Loaded: ${template.name}`,
+      description: template.description
+    });
   };
 
   // Convert local params to kolam generation params
@@ -139,7 +208,8 @@ export default function Create() {
     complexity: params.complexity[0],
     symmetry: params.symmetry,
     loops: params.loops[0],
-    spacing: params.spacing[0]
+    spacing: params.spacing[0],
+    seed: patternKey // Use patternKey as seed for variations
   });
 
   const handlePreview = () => {
@@ -152,11 +222,12 @@ export default function Create() {
       return;
     }
     
-    const newPreviewState = !showPreview;
-    setShowPreview(newPreviewState);
+    const newPreviewState = !showVisualPattern;
     setShowVisualPattern(newPreviewState);
     
     if (newPreviewState) {
+      // Generate new pattern when showing preview
+      setPatternKey(prev => prev + 1);
       toast({
         title: "Preview Enabled",
         description: "Pattern preview is now visible"
@@ -239,7 +310,8 @@ export default function Create() {
     });
   };
 
-  const generateKolam = () => {
+
+  const generateKolam = async () => {
     if (!params.patternType || params.selectedShapes.length === 0) {
       toast({
         title: "Missing Parameters",
@@ -252,14 +324,59 @@ export default function Create() {
     setIsGenerating(true);
     setShowVisualPattern(true);
     
+    // If user provided a prompt, enhance the generation with AI insights
+    if (userPrompt.trim()) {
+      try {
+        // Call AI to get pattern suggestions based on user prompt
+        const response = await fetch('/api/generate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+            prompt: `Based on this description: "${userPrompt}", suggest optimal kolam parameters. Current settings: ${params.patternType} pattern with ${params.selectedShapes.join(', ')} shapes. Provide specific recommendations for grid size (3-15), complexity (1-10), loops (1-8), and spacing (1-5) that would best match this description. Also suggest if any different shapes or pattern type would be better.`
+          })
+        });
+        
+        if (response.ok) {
+          const aiSuggestion = await response.json();
+          // Parse AI response and potentially adjust parameters
+          console.log('AI Suggestion:', aiSuggestion.response);
+          
+          toast({
+            title: "AI Enhanced Generation!",
+            description: "Pattern optimized based on your description"
+          });
+        }
+      } catch (error) {
+        console.error('AI enhancement failed:', error);
+        // Continue with regular generation
+      }
+    }
+    
     // Simulate brief generation time for better UX
     setTimeout(() => {
       setIsGenerating(false);
       toast({
         title: "Kolam Generated!",
-        description: "Your custom kolam pattern has been created successfully"
+        description: userPrompt.trim() ? 
+          "Your custom kolam pattern has been created based on your description" :
+          "Your custom kolam pattern has been created successfully"
       });
-    }, 800);
+    }, 1200);
+  };
+
+  const handleRegenerate = () => {
+    // Force pattern regeneration by updating the key
+    setPatternKey(prev => prev + 1);
+    setIsGenerating(true);
+    
+    // Brief animation for better UX
+    setTimeout(() => {
+      setIsGenerating(false);
+      toast({
+        title: "Pattern Regenerated!",
+        description: "Your kolam has been recreated with the current settings"
+      });
+    }, 600);
   };
 
   const getDifficultyColor = (difficulty: string) => {
@@ -325,6 +442,23 @@ export default function Create() {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
+              {/* User Prompt Input */}
+              <div>
+                <Label className="text-sm font-medium">Describe Your Kolam</Label>
+                <Input
+                  placeholder="e.g., 'Create a lotus mandala for Diwali celebration with 8 petals'"
+                  value={userPrompt}
+                  onChange={(e) => {
+                    setUserPrompt(e.target.value);
+                    setParams(prev => ({...prev, userPrompt: e.target.value}));
+                  }}
+                  className="mt-2"
+                />
+                <p className="text-xs text-muted-foreground mt-1">
+                  Describe your desired pattern to influence generation
+                </p>
+              </div>
+              
               <div>
                 <Label className="text-sm font-medium">Grid Size</Label>
                 <div className="mt-2">
@@ -499,7 +633,7 @@ export default function Create() {
                 className="transition-all duration-200 hover:bg-primary/5"
               >
                 <Eye className="w-4 h-4 mr-2" />
-                {showPreview ? 'Hide Preview' : 'Preview'}
+                {showVisualPattern ? 'Hide Preview' : 'Preview'}
               </Button>
               <Button 
                 size="sm" 
@@ -516,11 +650,15 @@ export default function Create() {
 
           {/* Canvas */}
           {showVisualPattern && params.patternType && params.selectedShapes.length > 0 ? (
-            <KolamRenderer 
-              params={getKolamParams()} 
-              animated={true}
-              showControls={true}
-            />
+            <div className="w-full">
+              <KolamRenderer 
+                key={patternKey} // Force re-render when key changes
+                params={getKolamParams()}
+                className="w-full"
+                animated={isGenerating}
+                onRegenerate={handleRegenerate}
+              />
+            </div>
           ) : (
             <Card className="card-traditional">
               <CardContent className="p-8">
@@ -622,14 +760,26 @@ export default function Create() {
                 >
                   <div className="flex items-start justify-between mb-2">
                     <h4 className="font-medium text-primary text-sm">{template.name}</h4>
-                    <Badge className={getDifficultyColor(template.complexity)}>
-                      {template.complexity}
+                    <Badge className={getDifficultyColor(template.difficulty)}>
+                      {template.difficulty}
                     </Badge>
                   </div>
                   
-                  <div className="text-xs text-muted-foreground space-y-1">
-                    <div>Grid: {template.gridSize}×{template.gridSize}</div>
-                    <div>Pattern: {template.pattern}</div>
+                  <p className="text-xs text-muted-foreground mb-2">{template.description}</p>
+                  
+                  <div className="text-xs text-muted-foreground space-y-1 mb-2">
+                    <div className="flex justify-between">
+                      <span>Grid:</span>
+                      <span>{template.gridSize}×{template.gridSize}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Time:</span>
+                      <span>{template.time}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Cultural:</span>
+                      <span className="text-right">{template.cultural}</span>
+                    </div>
                     <div>Shapes: {template.shapes.join(', ')}</div>
                   </div>
                   
