@@ -129,7 +129,7 @@ export function Layout({ children }: LayoutProps) {
               Preserving traditional heritage through modern AI technology
             </p>
             <p className="text-sm text-muted-foreground">
-              Crafted with ♥ by{" "}
+              Project by{" "}
               <span className="font-semibold text-primary">HeritageXtech</span>
             </p>
           </div>

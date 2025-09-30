@@ -1,55 +1,63 @@
 import { Link } from "react-router-dom";
 import { PatternAnalyzer } from "@/components/PatternAnalyzer";
-import { 
-  Scan, 
-  Palette, 
-  Users, 
-  GamepadIcon, 
-  Sparkles, 
+import {
+  Scan,
+  Palette,
+  Users,
+  GamepadIcon,
+  Sparkles,
   ArrowRight,
   Eye,
   Brain,
-  Zap
+  Zap,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 const features = [
   {
     icon: Scan,
     title: "Pattern Analysis",
-    description: "AI-powered analysis of traditional kolam patterns with detailed insights",
+    description:
+      "AI-powered analysis of traditional kolam patterns with detailed insights",
     href: "/analyze",
-    color: "from-primary to-primary-light"
+    color: "from-primary to-primary-light",
   },
   {
     icon: Palette,
     title: "Recreation Tools",
-    description: "Create beautiful kolam designs with digital tools and templates",
+    description:
+      "Create beautiful kolam designs with digital tools and templates",
     href: "/create",
-    color: "from-accent to-kolam-gold"
+    color: "from-accent to-kolam-gold",
   },
   {
     icon: GamepadIcon,
     title: "Interactive Games",
     description: "Learn kolam principles through engaging dot-connecting games",
     href: "/games",
-    color: "from-sacred-red to-primary"
+    color: "from-sacred-red to-primary",
   },
   {
     icon: Users,
     title: "Community Hub",
     description: "Share designs, compete with others, and celebrate heritage",
     href: "/community",
-    color: "from-kolam-gold to-accent"
-  }
+    color: "from-kolam-gold to-accent",
+  },
 ];
 
 const stats = [
   { label: "Patterns Analyzed", value: "2,500+", icon: Eye },
   { label: "AI Accuracy", value: "94.2%", icon: Brain },
   { label: "Active Users", value: "15K+", icon: Users },
-  { label: "Cultural Insights", value: "∞", icon: Zap }
+  { label: "Cultural Insights", value: "∞", icon: Zap },
 ];
 
 export default function Home() {
@@ -57,21 +65,21 @@ export default function Home() {
     <div className="space-y-16">
       {/* Hero Section */}
       <section className="container mx-auto px-4 py-8 sm:py-12">
-        <div className="text-center space-y-6 sm:space-y-8 max-w-4xl mx-auto">
+        <div className="text-center space-y-6 sm:space-y-8 max-w-4xl mx-auto p-4">
           <div className="animate-traditional-fade">
-            <h1 className="text-3xl sm:text-4xl md:text-6xl font-traditional font-bold bg-gradient-to-r from-primary via-primary-light to-accent bg-clip-text text-transparent mb-4 sm:mb-6">
-              Where Heritage Meets
-              <br />
+            <h1 className="text-3xl sm:text-4xl md:text-6xl font-traditional font-bold bg-gradient-to-r from-primary via-primary-light to-accent bg-clip-text text-transparent mb-4 sm:mb-6 p-4">
+              Heritage Meets AI
+              {/* <br /> */}
               <span className="relative">
-                Intelligence
                 <div className="absolute -top-4 -right-8 animate-kolam-glow">
                   <Sparkles className="w-8 h-8 text-accent opacity-80" />
                 </div>
               </span>
             </h1>
             <p className="text-lg sm:text-xl md:text-2xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-              Discover the mathematical beauty and cultural significance of traditional kolam patterns 
-              through cutting-edge AI analysis and recreation tools.
+              Discover the mathematical beauty and cultural significance of
+              traditional kolam patterns through cutting-edge AI analysis and
+              recreation tools.
             </p>
           </div>
 
@@ -84,7 +92,11 @@ export default function Home() {
               </Button>
             </Link>
             <Link to="/create">
-              <Button variant="outline" size="lg" className="px-8 py-4 border-primary/30 hover:bg-primary/5">
+              <Button
+                variant="outline"
+                size="lg"
+                className="px-8 py-4 border-primary/30 hover:bg-primary/5"
+              >
                 <Palette className="w-5 h-5 mr-2" />
                 Create Patterns
               </Button>
@@ -106,9 +118,6 @@ export default function Home() {
                 <div className="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-br from-primary to-accent rounded-full mb-2">
                   <stat.icon className="w-6 h-6 text-primary-foreground" />
                 </div>
-                <p className="text-xl sm:text-2xl md:text-3xl font-bold text-primary">
-                  {stat.value}
-                </p>
                 <p className="text-sm text-muted-foreground font-medium">
                   {stat.label}
                 </p>
@@ -125,11 +134,12 @@ export default function Home() {
             Analyze Your Kolam
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Upload an image of any kolam pattern and discover its hidden mathematical principles, 
-            symmetry patterns, and cultural significance powered by advanced AI.
+            Upload an image of any kolam pattern and discover its hidden
+            mathematical principles, symmetry patterns, and cultural
+            significance powered by advanced AI.
           </p>
         </div>
-        
+
         <PatternAnalyzer />
       </section>
 
@@ -140,7 +150,8 @@ export default function Home() {
             Explore Kolam Heritage
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Dive deep into the world of traditional South Indian art with our comprehensive suite of tools
+            Dive deep into the world of traditional South Indian art with our
+            comprehensive suite of tools
           </p>
         </div>
 
@@ -149,7 +160,9 @@ export default function Home() {
             <Link key={index} to={feature.href} className="group">
               <Card className="card-traditional h-full group-hover:scale-[1.02] transition-all duration-300">
                 <CardHeader>
-                  <div className={`inline-flex items-center justify-center w-12 h-12 bg-gradient-to-br ${feature.color} rounded-xl mb-4`}>
+                  <div
+                    className={`inline-flex items-center justify-center w-12 h-12 bg-gradient-to-br ${feature.color} rounded-xl mb-4`}
+                  >
                     <feature.icon className="w-6 h-6 text-white" />
                   </div>
                   <CardTitle className="text-xl font-traditional group-hover:text-primary transition-colors">
@@ -179,8 +192,8 @@ export default function Home() {
               Join the Heritage Revolution
             </h2>
             <p className="text-base sm:text-lg text-muted-foreground">
-              Be part of preserving and celebrating traditional South Indian art through modern technology. 
-              Start your journey with KOLAM AI today.
+              Be part of preserving and celebrating traditional South Indian art
+              through modern technology. Start your journey with KOLAM AI today.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link to="/community">
@@ -190,7 +203,11 @@ export default function Home() {
                 </Button>
               </Link>
               <Link to="/games">
-                <Button variant="outline" size="lg" className="px-8 py-4 border-primary/30 hover:bg-primary/5">
+                <Button
+                  variant="outline"
+                  size="lg"
+                  className="px-8 py-4 border-primary/30 hover:bg-primary/5"
+                >
                   <GamepadIcon className="w-5 h-5 mr-2" />
                   Play Games
                 </Button>
