@@ -31,19 +31,19 @@ const sampleImages = [
   {
     id: 1,
     name: "Traditional Lotus Kolam",
-    path: "/sampleimages/sample1.svg",
+    path: "/sampleimages/sample1.jpg",
     description: "Classic lotus pattern with 8-fold symmetry",
   },
   {
     id: 2,
     name: "Geometric Star Pattern",
-    path: "/sampleimages/sample2.svg",
+    path: "/sampleimages/sample2.jpg",
     description: "Complex geometric design with radial symmetry",
   },
   {
     id: 3,
     name: "Floral Vine Kolam",
-    path: "/sampleimages/sample3.svg",
+    path: "/sampleimages/sample3.jpg",
     description: "Intricate floral pattern with curved lines",
   },
   {
@@ -412,7 +412,6 @@ export function PatternAnalyzer() {
                   </>
                 )}
               </Button>
-
             </div>
           )}
         </CardContent>
@@ -440,7 +439,7 @@ export function PatternAnalyzer() {
                 <div className="w-2 h-2 bg-amber-500 rounded-full animate-pulse delay-200"></div>
               </div>
             </div>
-            
+
             <div className="mt-4 bg-amber-500/10 rounded-lg p-3">
               <div className="flex items-center justify-between text-xs text-amber-600/80">
                 <span>🔍 Detecting patterns and mathematical principles</span>
