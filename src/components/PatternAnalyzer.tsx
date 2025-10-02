@@ -30,39 +30,45 @@ import { analyzeKolamImage } from "@/lib/api";
 const sampleImages = [
   {
     id: 1,
-    name: "Traditional Lotus Kolam",
+    name: "Traditional Sikku Kolam",
     path: "/sampleimages/sample1.jpg",
-    description: "Classic lotus pattern with 8-fold symmetry",
+    description:
+      "A mesmerizing pattern of interwoven lines and loops around a central knot.",
   },
   {
     id: 2,
-    name: "Geometric Star Pattern",
+    name: "Basic Pulli Pattern",
     path: "/sampleimages/sample2.jpg",
-    description: "Complex geometric design with radial symmetry",
+    description:
+      "A foundational design perfect for beginners, showcasing clean lines and symmetry.",
   },
   {
     id: 3,
-    name: "Floral Vine Kolam",
+    name: "Elegant Bird Kolam",
     path: "/sampleimages/sample3.jpg",
-    description: "Intricate floral pattern with curved lines",
+    description:
+      "A classic Sikku pattern combining geometric knotwork with stylized bird motifs.",
   },
   {
     id: 4,
-    name: "Mandala Style Design",
+    name: "Woven Net Kolam",
     path: "/sampleimages/sample4.jpg",
-    description: "Circular mandala with mathematical precision",
+    description:
+      "A beautiful and meditative design created from a simple, repeating loop pattern.",
   },
   {
     id: 5,
-    name: "Traditional Dot Grid",
+    name: "Malli Moggu Kolam",
     path: "/sampleimages/sample5.jpg",
-    description: "Classic pulli kolam with dot matrix",
+    description:
+      "A simple and traditional design of repeating jasmine bud motifs, perfect for beginners.",
   },
   {
     id: 6,
-    name: "Festival Special Pattern",
+    name: "Brahma Mudi Kolam",
     path: "/sampleimages/sample6.jpg",
-    description: "Elaborate design for special occasions",
+    description:
+      "A traditional design featuring the sacred 'Brahma's Knot' at its center, symbolizing eternity and auspiciousness.",
   },
 ];
 
