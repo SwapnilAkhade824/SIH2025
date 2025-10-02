@@ -473,7 +473,7 @@ export function PatternAnalyzer() {
                   </div>
                   <div>
                     <h2 className="text-2xl font-mono font-bold bg-gradient-to-r from-kolam-gold via-accent to-kolam-gold bg-clip-text text-transparent">
-                      KOLAM_ANALYSIS_OUTPUT.json
+                      KOLAM ANALYSIS
                     </h2>
                     <div className="text-xs font-mono text-gray-400 mt-1">
                       Advanced Pattern Recognition System v2.1
@@ -485,7 +485,7 @@ export function PatternAnalyzer() {
                     <div className="flex items-center space-x-2">
                       <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
                       <span className="text-green-400 font-mono text-sm font-bold">
-                        ANALYSIS_COMPLETE
+                        ANALYSIS COMPLETE
                       </span>
                     </div>
                     <div className="text-xs font-mono text-gray-400 mt-1">
@@ -759,7 +759,7 @@ export function PatternAnalyzer() {
                     <BarChart3 className="w-4 h-4 text-black" />
                   </div>
                   <span className="text-lg font-bold">
-                    TRADITIONAL_PRINCIPLES_MATRIX
+                    Traditional Principles Matrix
                   </span>
                 </div>
                 <div className="text-xs font-mono text-gray-400 bg-black/40 px-2 py-1 rounded">
@@ -859,9 +859,7 @@ export function PatternAnalyzer() {
                     <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
                     <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
                   </div>
-                  <span className="text-lg font-bold">
-                    cultural_analysis_terminal
-                  </span>
+                  <span className="text-lg font-bold">Cultural Analysis</span>
                 </div>
                 <div className="text-xs font-mono text-gray-400 bg-black/40 px-2 py-1 rounded">
                   Terminal v1.2.3
@@ -920,7 +918,7 @@ export function PatternAnalyzer() {
                       <div className="flex items-center space-x-2 mb-3">
                         <Award className="w-4 h-4 text-kolam-gold" />
                         <span className="text-kolam-gold font-mono font-bold text-sm">
-                          PATTERN_METADATA
+                          Pattern Metadata
                         </span>
                       </div>
                       <div className="space-y-2">
@@ -949,7 +947,7 @@ export function PatternAnalyzer() {
                       <div className="flex items-center space-x-2 mb-3">
                         <MapPin className="w-4 h-4 text-accent" />
                         <span className="text-accent font-mono font-bold text-sm">
-                          REGIONAL_DATA
+                          Regional Data
                         </span>
                       </div>
                       <div className="space-y-2">
