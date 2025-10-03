@@ -19,7 +19,7 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
 async function tryModelWithFallback(prompt: string, imageData?: any) {
   let model = genAI.getGenerativeModel({ model: "gemini-2.5-pro" });
   let modelUsed = "gemini-2.5-pro";
-  
+
   try {
     const content = imageData ? [prompt, imageData] : prompt;
     const result = await model.generateContent(content);
@@ -27,22 +27,23 @@ async function tryModelWithFallback(prompt: string, imageData?: any) {
     return { text: response.text(), modelUsed };
   } catch (error: any) {
     // Check if error is due to model overload or capacity issues
-    if (error?.message?.includes('overload') || 
-        error?.message?.includes('capacity') || 
-        error?.message?.includes('quota') ||
-        error?.status === 429 ||
-        error?.status === 503) {
-      
-      console.log('Pro model overloaded, falling back to Flash model');
+    if (
+      error?.message?.includes("overload") ||
+      error?.message?.includes("capacity") ||
+      error?.message?.includes("quota") ||
+      error?.status === 429 ||
+      error?.status === 503
+    ) {
+      console.log("Pro model overloaded, falling back to Flash model");
       model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
       modelUsed = "gemini-2.5-flash";
-      
+
       const content = imageData ? [prompt, imageData] : prompt;
       const result = await model.generateContent(content);
       const response = await result.response;
       return { text: response.text(), modelUsed };
     }
-    
+
     // Re-throw if it's not a capacity issue
     throw error;
   }
@@ -176,13 +177,15 @@ Return a valid JSON response with this exact structure:
     "score": <decimal 0.6-0.95 based on how well symmetry is maintained>
   },
   "complexityAnalysis": {
-    "level": "<'Beginner' (simple loops, <10 dots), 'Intermediate' (moderate patterns, 10-16 dots), 'Advanced' (intricate designs, >16 dots)>",
-    "score": <integer 1-10: 1-3 simple, 4-6 moderate, 7-8 complex, 9-10 masterpiece>,
-    "patternCount": <count distinct motifs/shapes: circles, petals, geometric forms>,
-    "entropy": <decimal 1.0-3.5: 1.0-1.5 simple, 1.5-2.5 moderate, 2.5+ complex>
+    "level": "<'Beginner', 'Intermediate', or 'Advanced'>",
+    "description": [
+      "<Short point about pattern intricacy - e.g., 'Simple geometric loops', 'Multiple interwoven motifs', 'Highly detailed fractal elements'>",
+      "<Short point about execution difficulty - e.g., 'Easy continuous lines', 'Requires careful planning', 'Demands expert precision'>",
+      "<Short point about visual complexity - e.g., 'Clean minimal design', 'Balanced moderate detail', 'Rich intricate composition'>"
+    ]
   },
   "mathematicalPrinciples": [
-    "<Select 3-5 from: 'Dot Matrix Foundation', 'Continuous Line Drawing', 'Geometric Symmetry', 'Fractal Patterns', 'Golden Ratio Proportions', 'Tessellation Principles', 'Topological Loops', 'Angular Relationships'>"
+    "<Select 2-5 from: 'Dot Matrix Foundation', 'Continuous Line Drawing', 'Geometric Symmetry', 'Fractal Patterns', 'Golden Ratio Proportions', 'Tessellation Principles', 'Topological Loops', 'Angular Relationships'>"
   ],
   "culturalDescription": [
     "<Describe the kolam's traditional purpose - daily ritual, festival, welcome, protection>",

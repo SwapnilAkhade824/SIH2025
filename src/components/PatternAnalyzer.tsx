@@ -120,15 +120,16 @@ const validateAnalysisResults = (analysis: any) => {
 
   // Validate complexity analysis
   if (validated.complexityAnalysis) {
-    // Ensure score is within 1-10 range
-    validated.complexityAnalysis.score = Math.max(
-      1,
-      Math.min(10, validated.complexityAnalysis.score)
-    );
-
-    // Ensure entropy is reasonable
-    if (validated.complexityAnalysis.entropy > 4) {
-      validated.complexityAnalysis.entropy = 2.5;
+    // Ensure description array exists and has content
+    if (
+      !validated.complexityAnalysis.description ||
+      !Array.isArray(validated.complexityAnalysis.description)
+    ) {
+      validated.complexityAnalysis.description = [
+        "Pattern analysis unavailable",
+        "Unable to assess difficulty",
+        "Visual complexity unknown",
+      ];
     }
   }
 
@@ -149,9 +150,7 @@ interface AnalysisResult {
   };
   complexityAnalysis: {
     level: string;
-    score: number;
-    patternCount: number;
-    entropy: number;
+    description: string[];
   };
   mathematicalPrinciples: string[];
   culturalDescription: string[];
@@ -449,7 +448,7 @@ export function PatternAnalyzer() {
             <div className="mt-4 bg-amber-500/10 rounded-lg p-3">
               <div className="flex items-center justify-between text-xs text-amber-600/80">
                 <span>🔍 Detecting patterns and mathematical principles</span>
-                <span className="font-mono">AI Processing...</span>
+                <span className="font-mono">⏳ Processing...</span>
               </div>
               <div className="mt-2 h-1 bg-amber-200/30 rounded-full overflow-hidden">
                 <div className="h-full bg-gradient-to-r from-amber-400 to-amber-600 rounded-full animate-pulse"></div>
@@ -462,58 +461,58 @@ export function PatternAnalyzer() {
       {/* Analysis Results */}
       {analysisResult && (
         <div className="animate-traditional-fade space-y-8">
-          {/* Technical Header */}
-          <div className="relative">
-            <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-accent/5 to-primary/5 rounded-2xl"></div>
-            <div className="relative bg-black/95 backdrop-blur-sm border border-primary/40 rounded-2xl p-6 shadow-2xl">
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center space-x-3">
-                  <div className="w-10 h-10 bg-gradient-to-br from-kolam-gold to-accent rounded-lg flex items-center justify-center">
-                    <Activity className="w-5 h-5 text-black" />
-                  </div>
-                  <div>
-                    <h2 className="text-2xl font-mono font-bold bg-gradient-to-r from-kolam-gold via-accent to-kolam-gold bg-clip-text text-transparent">
-                      KOLAM ANALYSIS
-                    </h2>
-                    <div className="text-xs font-mono text-gray-400 mt-1">
-                      Advanced Pattern Recognition System v2.1
-                    </div>
-                  </div>
-                </div>
-                <div className="flex items-center space-x-4">
-                  <div className="text-right">
-                    <div className="flex items-center space-x-2">
-                      <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
-                      <span className="text-green-400 font-mono text-sm font-bold">
-                        ANALYSIS COMPLETE
-                      </span>
-                    </div>
-                    <div className="text-xs font-mono text-gray-400 mt-1">
-                      Status: Active | Mode: Deep Learning
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
-                <div className="bg-black/40 rounded-lg p-3 border border-green-500/20">
-                  <div className="font-mono text-xs text-green-400/70">
-                    ⚡ Processing Time:{" "}
-                    <span className="text-green-400">2.84s</span>
-                  </div>
-                </div>
-                <div className="bg-black/40 rounded-lg p-3 border border-blue-500/20">
-                  <div className="font-mono text-xs text-blue-400/70">
-                    🎯 Accuracy: <span className="text-blue-400">94.7%</span>
-                  </div>
-                </div>
-                <div className="bg-black/40 rounded-lg p-3 border border-yellow-500/20">
-                  <div className="font-mono text-xs text-yellow-400/70">
-                    📊 Confidence: <span className="text-yellow-400">High</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+          {/* //   Technical Header
+        //   <div className="relative">
+        //     <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-accent/5 to-primary/5 rounded-2xl"></div>
+        //     <div className="relative bg-black/95 backdrop-blur-sm border border-primary/40 rounded-2xl p-6 shadow-2xl">
+        //       <div className="flex items-center justify-between mb-4">
+        //         <div className="flex items-center space-x-3">
+        //           <div className="w-10 h-10 bg-gradient-to-br from-kolam-gold to-accent rounded-lg flex items-center justify-center">
+        //             <Activity className="w-5 h-5 text-black" />
+        //           </div>
+        //           <div>
+        //             <h2 className="text-2xl font-mono font-bold bg-gradient-to-r from-kolam-gold via-accent to-kolam-gold bg-clip-text text-transparent">
+        //               KOLAM ANALYSIS
+        //             </h2>
+        //             <div className="text-xs font-mono text-gray-400 mt-1">
+        //               Advanced Pattern Recognition System v2.1
+        //             </div>
+        //           </div>
+        //         </div>
+        //         <div className="flex items-center space-x-4">
+        //           <div className="text-right">
+        //             <div className="flex items-center space-x-2">
+        //               <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+        //               <span className="text-green-400 font-mono text-sm font-bold">
+        //                 ANALYSIS COMPLETE
+        //               </span>
+        //             </div>
+        //             <div className="text-xs font-mono text-gray-400 mt-1">
+        //               Status: Active | Mode: Deep Learning
+        //             </div>
+        //           </div>
+        //         </div>
+        //       </div>
+        //       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+        //         <div className="bg-black/40 rounded-lg p-3 border border-green-500/20">
+        //           <div className="font-mono text-xs text-green-400/70">
+        //             ⚡ Processing Time:{" "}
+        //             <span className="text-green-400">2.84s</span>
+        //           </div>
+        //         </div>
+        //         <div className="bg-black/40 rounded-lg p-3 border border-blue-500/20">
+        //           <div className="font-mono text-xs text-blue-400/70">
+        //             🎯 Accuracy: <span className="text-blue-400">94.7%</span>
+        //           </div>
+        //         </div>
+        //         <div className="bg-black/40 rounded-lg p-3 border border-yellow-500/20">
+        //           <div className="font-mono text-xs text-yellow-400/70">
+        //             📊 Confidence: <span className="text-yellow-400">High</span>
+        //           </div>
+        //         </div>
+        //       </div>
+        //     </div>
+        //   </div> */}
 
           {/* Technical Metrics Grid */}
           <div className="grid sm:grid-cols-1 md:grid-cols-3 gap-6">
@@ -702,47 +701,47 @@ export function PatternAnalyzer() {
                         Pattern Difficulty Assessment
                       </div>
                     </div>
-                    <div className="space-y-2">
-                      <div className="flex justify-between items-center text-xs font-mono bg-black/30 p-2 rounded">
-                        <span className="text-gray-400 flex items-center space-x-1">
-                          <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
-                          <span>LEVEL:</span>
-                        </span>
-                        <span className="text-white font-bold">
-                          {analysisResult.complexityAnalysis.score}/10
-                        </span>
-                      </div>
-                      <div className="flex justify-between items-center text-xs font-mono bg-black/30 p-2 rounded">
-                        <span className="text-gray-400 flex items-center space-x-1">
-                          <div className="w-2 h-2 bg-green-400 rounded-full"></div>
-                          <span>PATTERNS:</span>
-                        </span>
-                        <span className="text-green-400 font-bold">
-                          {analysisResult.complexityAnalysis.patternCount}
-                        </span>
-                      </div>
-                      <div className="flex justify-between items-center text-xs font-mono bg-black/30 p-2 rounded">
-                        <span className="text-gray-400 flex items-center space-x-1">
-                          <div className="w-2 h-2 bg-sacred-red rounded-full"></div>
-                          <span>ENTROPY:</span>
-                        </span>
-                        <span className="text-sacred-red font-bold">
-                          {analysisResult.complexityAnalysis.entropy.toFixed(2)}
-                        </span>
-                      </div>
-                    </div>
-                    <div className="mt-3">
-                      <div className="h-2 bg-black/40 rounded-full overflow-hidden">
-                        <div
-                          className="h-full bg-gradient-to-r from-sacred-red to-red-500 rounded-full transition-all duration-1000 delay-400"
-                          style={{
-                            width: `${
-                              (analysisResult.complexityAnalysis.score / 10) *
-                              100
-                            }%`,
-                          }}
-                        ></div>
-                      </div>
+                    <div className="space-y-3">
+                      {analysisResult.complexityAnalysis.description.map(
+                        (point, index) => {
+                          const colors = [
+                            {
+                              bg: "bg-blue-400/10",
+                              text: "text-blue-400",
+                              dot: "bg-blue-400",
+                            },
+                            {
+                              bg: "bg-green-400/10",
+                              text: "text-green-400",
+                              dot: "bg-green-400",
+                            },
+                            {
+                              bg: "bg-sacred-red/10",
+                              text: "text-sacred-red",
+                              dot: "bg-sacred-red",
+                            },
+                          ];
+                          const color = colors[index % colors.length];
+
+                          return (
+                            <div
+                              key={index}
+                              className={`${color.bg} p-3 rounded-lg border border-white/10`}
+                            >
+                              <div className="flex items-start space-x-3">
+                                <div
+                                  className={`w-2 h-2 ${color.dot} rounded-full mt-2 flex-shrink-0`}
+                                ></div>
+                                <p
+                                  className={`text-sm font-mono ${color.text} leading-relaxed`}
+                                >
+                                  {point}
+                                </p>
+                              </div>
+                            </div>
+                          );
+                        }
+                      )}
                     </div>
                   </div>
                 </CardContent>
